@@ -2,6 +2,7 @@ from pathlib import Path
 from pprint import pprint
 
 import higgsfield_client
+from higgsfield_client.exceptions import HiggsfieldClientError
 
 from config import (
     DEFAULT_IMAGE_MODEL,
@@ -33,6 +34,7 @@ def generate_image(
     prompt: str,
     content_type: str,
     reference_images: list[str] | None = None,
+    dry_run: bool = False,
 ):
     """
     Generate image(s) using the configured Higgsfield model.
@@ -50,24 +52,27 @@ def generate_image(
     print(f"Aspect Ratio     : {aspect_ratio}")
     print(f"Resolution       : {DEFAULT_IMAGE_RESOLUTION}")
     print(f"Reference Images : {len(reference_images)}")
+    print(f"Dry Run          : {dry_run}")
     print("==============================\n")
 
     uploaded_image_urls = []
 
-    for image_path in reference_images:
+    if not dry_run:
+        for image_path in reference_images:
 
-        print(f"⬆️ Uploading: {image_path}")
+            print(f"⬆️ Uploading: {image_path}")
 
-        image_url = higgsfield_client.upload_file(
-            Path(image_path)
-        )
+            image_url = higgsfield_client.upload_file(
+                Path(image_path)
+            )
 
-        uploaded_image_urls.append(image_url)
+            uploaded_image_urls.append(image_url)
+    else:
+        uploaded_image_urls = [str(Path(image_path)) for image_path in reference_images]
 
     arguments = {
         "prompt": prompt,
         "aspect_ratio": aspect_ratio,
-        "quality": "low",
     }
 
     # Only include resolution if configured
@@ -81,6 +86,14 @@ def generate_image(
     print("📦 Generation Arguments")
     pprint(arguments)
     print()
+
+    if dry_run:
+        print("🧪 Dry run enabled - skipping Higgsfield request.\n")
+        return {
+            "model": DEFAULT_IMAGE_MODEL,
+            "arguments": arguments,
+            "reference_images": reference_images,
+        }
 
     try:
 
@@ -102,4 +115,14 @@ def generate_image(
 
         print("\n❌ Image generation failed.\n")
         print(e)
+
+        error_text = str(e).lower()
+        if "not found" in error_text and "model" in error_text:
+            print(
+                "Hint: the selected Higgsfield model id is not available on this account. "
+                "The plain GPT Image slug and gpt_image_2 both returned 404 here, so "
+                "use the exact model id shown in the Higgsfield dashboard or keep the "
+                "documented Soul default."
+            )
+
         raise

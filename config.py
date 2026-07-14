@@ -11,5 +11,5 @@ HF_API_KEY = os.getenv("HF_API_KEY")
 HF_API_SECRET = os.getenv("HF_API_SECRET")
 
 # Image Generation Defaults
-DEFAULT_IMAGE_MODEL = "bytedance/seedream/v4/text-to-image"
-DEFAULT_IMAGE_RESOLUTION = "1K"
+DEFAULT_IMAGE_MODEL = os.getenv("HF_IMAGE_MODEL", "higgsfield-ai/soul/standard")
+DEFAULT_IMAGE_RESOLUTION = os.getenv("HF_IMAGE_RESOLUTION", "720p")
