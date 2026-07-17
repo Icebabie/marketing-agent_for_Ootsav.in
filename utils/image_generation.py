@@ -23,10 +23,10 @@ def get_aspect_ratio(content_type: str) -> str:
         return "9:16"
 
     if "carousel" in content_type:
-        return "4:5"
+        return "3:4"
 
     # Default to portrait Instagram post
-    return "4:5"
+    return "3:4"
 
 
 def generate_image(
@@ -54,20 +54,23 @@ def generate_image(
 
     uploaded_image_urls = []
 
-    for image_path in reference_images:
+    for image in reference_images:
 
-        print(f"⬆️ Uploading: {image_path}")
+        # Already hosted online (previous Higgsfield output)
+        if image.startswith("http://") or image.startswith("https://"):
+            uploaded_image_urls.append(image)
 
-        image_url = higgsfield_client.upload_file(
-            Path(image_path)
-        )
+        # Local file selected by the user
+        else:
+            print(f"⬆️ Uploading: {image}")
 
-        uploaded_image_urls.append(image_url)
+            image_url = higgsfield_client.upload_file(image)
+
+            uploaded_image_urls.append(image_url)
 
     arguments = {
         "prompt": prompt,
         "aspect_ratio": aspect_ratio,
-        "quality": "low",
     }
 
     # Only include resolution if configured
@@ -95,8 +98,12 @@ def generate_image(
         pprint(result)
         print()
 
-        # Temporary until we inspect the response structure.
-        return result
+        generated_images = [
+            image["url"]
+            for image in result.get("images", [])
+        ]
+
+        return generated_images
 
     except Exception as e:
 

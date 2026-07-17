@@ -43,6 +43,20 @@ def creative_director(state):
     creative_brief = build_user_context(
         state["user_intent"]
     )
+    if state["edit_request"]:
+
+        creative_brief += f"""
+
+    This is an image editing request.
+
+    Original Prompt:
+    {state["final_prompt"]}
+
+    Requested Changes:
+    {state["edit_request"]}
+
+    Keep everything else in the image unchanged unless required by the requested modification.
+    """
 
     response = invoke_llm(
         [

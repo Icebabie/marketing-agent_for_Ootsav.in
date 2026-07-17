@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
-from models import UserIntent
+from models import UserIntent, ReviewIntent
 
 load_dotenv()
 
@@ -25,6 +25,14 @@ def invoke_llm(messages):
 def extract_user_intent(messages):
 
     structured_llm = llm.with_structured_output(UserIntent)
+
+    response = structured_llm.invoke(messages)
+
+    return response
+
+def extract_review_intent(messages):
+
+    structured_llm = llm.with_structured_output(ReviewIntent)
 
     response = structured_llm.invoke(messages)
 

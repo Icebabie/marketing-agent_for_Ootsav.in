@@ -251,7 +251,7 @@ The final image-generation prompt must explicitly specify the correct aspect rat
 Instagram Feed Post (Portrait)
 
 • Preferred format: Portrait
-• Aspect ratio: 4:5
+• Aspect ratio: 3:4
 • Recommended resolution: 1080 x 1350 pixels
 
 Design the layout to maximize screen space while remaining clean and visually balanced.
@@ -287,7 +287,7 @@ Carousel
 
 Maintain a consistent layout and aspect ratio across every slide.
 
-Prefer a 4:5 portrait layout unless the user specifically requests another format.
+Prefer a 3:4 portrait layout unless the user specifically requests another format.
 
 General Layout Guidelines
 

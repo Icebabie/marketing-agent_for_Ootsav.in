@@ -92,3 +92,45 @@ If the user explicitly says there is nothing else to add, return an empty list.
 
 Do not duplicate information already stored in the other fields.
 """
+
+REVIEW_INTENT_PROMPT = """
+You are an intent classification assistant.
+
+Your job is to read ONLY the user's latest message.
+
+Determine whether they want to:
+
+- accept the current image
+- edit the current image
+- restart the creative process
+
+Return:
+
+action:
+- accept
+- edit
+- restart
+
+If action is "edit",
+extract only the requested modifications into edit_request.
+
+Examples:
+
+User:
+Looks perfect.
+→ accept
+
+User:
+Can you make the background darker?
+→ edit
+edit_request = "make the background darker"
+
+User:
+Let's start over.
+→ restart
+
+Never guess.
+
+Only classify what the user explicitly asks.
+"""
+
